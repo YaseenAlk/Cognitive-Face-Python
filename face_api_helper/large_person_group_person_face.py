@@ -5,6 +5,7 @@ File: large_person_group_person_face.py
 Description: Large Person Group Person Face section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def add(image,
@@ -42,6 +43,8 @@ def add(image,
         'targetFace': target_face,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUPPERSON_ADDFACE
+
     return util.request(
         'POST', url, headers=headers, params=params, json=json, data=data)
 
@@ -61,6 +64,8 @@ def delete(large_person_group_id, person_id, persisted_face_id):
     """
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUPPERSON_DELETEFACE
 
     return util.request('DELETE', url)
 
@@ -83,6 +88,8 @@ def get(large_person_group_id, person_id, persisted_face_id):
     """
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUPPERSON_GETFACE
 
     return util.request('GET', url)
 
@@ -107,5 +114,7 @@ def update(large_person_group_id, person_id, persisted_face_id, user_data):
     json = {
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUPPERSON_UPDATEFACE
 
     return util.request('PATCH', url, json=json)

@@ -5,6 +5,7 @@ File: person.py
 Description: Person section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def add_face(image,
@@ -43,6 +44,8 @@ def add_face(image,
         'targetFace': target_face,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_ADDFACE
+
     return util.request(
         'POST', url, headers=headers, params=params, json=json, data=data)
 
@@ -68,6 +71,8 @@ def create(person_group_id, name, user_data=None):
         'userData': user_data,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_CREATE
+
     return util.request('POST', url, json=json)
 
 
@@ -83,6 +88,8 @@ def delete(person_group_id, person_id):
         An empty response body.
     """
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_DELETE
 
     return util.request('DELETE', url)
 
@@ -105,6 +112,8 @@ def delete_face(person_group_id, person_id, persisted_face_id):
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_DELETEFACE
+
     return util.request('DELETE', url)
 
 
@@ -121,6 +130,8 @@ def get(person_group_id, person_id):
         The person's information.
     """
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_GET
 
     return util.request('GET', url)
 
@@ -142,6 +153,8 @@ def get_face(person_group_id, person_id, persisted_face_id):
     """
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_GETFACE
 
     return util.request('GET', url)
 
@@ -166,6 +179,8 @@ def lists(person_group_id, start=None, top=None):
         'top': top,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_LIST
+
     return util.request('GET', url, params=params)
 
 
@@ -188,6 +203,8 @@ def update(person_group_id, person_id, name=None, user_data=None):
         'name': name,
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_UPDATE
 
     return util.request('PATCH', url, json=json)
 
@@ -212,5 +229,7 @@ def update_face(person_group_id, person_id, persisted_face_id, user_data=None):
     json = {
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_UPDATEFACE
 
     return util.request('PATCH', url, json=json)

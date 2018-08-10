@@ -5,6 +5,7 @@ File: face.py
 Description: Face section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def detect(image, face_id=True, landmarks=False, attributes=''):
@@ -36,6 +37,8 @@ def detect(image, face_id=True, landmarks=False, attributes=''):
         'returnFaceLandmarks': landmarks and 'true' or 'false',
         'returnFaceAttributes': attributes,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.FACE_DETECT
 
     return util.request(
         'POST', url, headers=headers, params=params, json=json, data=data)
@@ -87,6 +90,8 @@ def find_similars(face_id,
         'mode': mode,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.FACE_FINDSIMILAR
+
     return util.request('POST', url, json=json)
 
 
@@ -105,6 +110,8 @@ def group(face_ids):
     json = {
         'faceIds': face_ids,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.FACE_GROUP
 
     return util.request('POST', url, json=json)
 
@@ -141,6 +148,8 @@ def identify(face_ids,
         'maxNumOfCandidatesReturned': max_candidates_return,
         'confidenceThreshold': threshold,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.FACE_IDENTIFY
 
     return util.request('POST', url, json=json)
 
@@ -186,5 +195,7 @@ def verify(face_id,
             'largePersonGroupId': large_person_group_id,
             'personId': person_id,
         })
+
+    util.MostRecentRequest.get().request_type = req_msg.FACE_VERIFY
 
     return util.request('POST', url, json=json)

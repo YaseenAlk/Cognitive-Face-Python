@@ -18,3 +18,5 @@ from . import util
 from .util import CognitiveFaceException
 from .util import Key
 from .util import BaseUrl
+from .util import MostRecentRequest
+from .util import MostRecentResponse

@@ -7,9 +7,13 @@ Description: Shared utilities for the Python SDK of the Cognitive Face API.
 import os.path
 import time
 
+import json as json_lib
 import requests
 
-import cognitive_face as CF
+import face_api_helper as CF
+
+from face_msgs.msg import FaceAPIRequest as req_msg
+from face_msgs.msg import FaceAPIResponse as resp_msg
 
 DEFAULT_BASE_URL = 'https://westus.api.cognitive.microsoft.com/face/v1.0/'
 
@@ -46,6 +50,7 @@ class Key(object):
     def set(cls, key):
         """Set the Subscription Key."""
         cls.key = key
+        MostRecentRequest.get().api_subscription_key = key
 
     @classmethod
     def get(cls):
@@ -61,6 +66,7 @@ class BaseUrl(object):
         if not base_url.endswith('/'):
             base_url += '/'
         cls.base_url = base_url
+        MostRecentRequest.get().location = base_url
 
     @classmethod
     def get(cls):
@@ -68,6 +74,28 @@ class BaseUrl(object):
             cls.base_url = DEFAULT_BASE_URL
         return cls.base_url
 
+class MostRecentRequest(object):
+    @classmethod
+    def get(cls):
+        if not hasattr(cls, 'most_recent_request') or not cls.most_recent_request:
+            cls.most_recent_request = req_msg()
+        return cls.most_recent_request
+
+class MostRecentResponse(object):
+    @classmethod
+    def get(cls):
+        if not hasattr(cls, 'most_recent_response') or not cls.most_recent_response:
+            cls.most_recent_response = resp_msg()
+        return cls.most_recent_response
+
+
+def init_from_json_str(json_str):
+    Key.set(read_json_param_from_str(json_str, "subscriptionKey"))
+    BaseUrl.set(read_json_param_from_str(json_str, "uriBase"))
+
+def read_json_param_from_str(string, param):
+        dictionary = json_lib.loads(string)
+        return dictionary[param]
 
 def request(method, url, data=None, json=None, headers=None, params=None):
     # pylint: disable=too-many-arguments
@@ -83,6 +111,24 @@ def request(method, url, data=None, json=None, headers=None, params=None):
         headers['Content-Type'] = 'application/json'
     headers['Ocp-Apim-Subscription-Key'] = Key.get()
 
+    req_msg_method = -1
+
+    if method.lower() == 'post'
+        req_msg_method = req_msg.HTTP_POST
+    elif method.lower() == 'put'
+        req_msg_method = req_msg.HTTP_PUT
+    elif method.lower() == 'delete'
+        req_msg_method = req_msg.HTTP_DELETE
+    elif method.lower() == 'get'
+        req_msg_method = req_msg.HTTP_GET
+    elif method.lower() == 'patch'
+        req_msg_method = req_msg.HTTP_PATCH
+    
+    most_recent_request.request_method = req_msg_method
+    most_recent_request.content_type = headers['Content-Type']
+    most_recent_request.request_parameters = json_lib.dumps(params)
+    most_recent_request.request_body = data if headers['Content-Type'] == 'application/octet-stream' else json_lib.dumps(json).encode('utf-8')
+    
     response = requests.request(
         method,
         url,
@@ -90,6 +136,9 @@ def request(method, url, data=None, json=None, headers=None, params=None):
         data=data,
         json=json,
         headers=headers)
+
+    MostRecentResponse.get().response_type = response.status_code
+    MostRecentRequest.get().response = response.text
 
     # Handle result and raise custom exception when something wrong.
     result = None

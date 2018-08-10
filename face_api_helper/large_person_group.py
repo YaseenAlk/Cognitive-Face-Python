@@ -5,6 +5,7 @@ File: large_person_group.py
 Description: Large Person Group section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def create(large_person_group_id, name=None, user_data=None):
@@ -29,6 +30,8 @@ def create(large_person_group_id, name=None, user_data=None):
         'userData': user_data,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_CREATE
+
     return util.request('PUT', url, json=json)
 
 
@@ -44,6 +47,8 @@ def delete(large_person_group_id):
         An empty response body.
     """
     url = 'largepersongroups/{}'.format(large_person_group_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_DELETE
 
     return util.request('DELETE', url)
 
@@ -61,6 +66,8 @@ def get(large_person_group_id):
     """
     url = 'largepersongroups/{}'.format(large_person_group_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_GET
+
     return util.request('GET', url)
 
 
@@ -77,6 +84,8 @@ def get_status(large_person_group_id):
         The large person group's training status.
     """
     url = 'largepersongroups/{}/training'.format(large_person_group_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_GETTRAININGSTATUS
 
     return util.request('GET', url)
 
@@ -101,6 +110,8 @@ def list(start=None, top=None):
         'top': top,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_LIST
+
     return util.request('GET', url, params=params)
 
 
@@ -115,6 +126,8 @@ def train(large_person_group_id):
         An empty JSON body.
     """
     url = 'largepersongroups/{}/train'.format(large_person_group_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_TRAIN
 
     return util.request('POST', url)
 
@@ -139,5 +152,7 @@ def update(large_person_group_id, name=None, user_data=None):
         'name': name,
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_UPDATE
 
     return util.request('PATCH', url, json=json)

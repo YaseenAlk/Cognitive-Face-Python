@@ -5,6 +5,7 @@ File: face_list.py
 Description: Face List section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def add_face(image, face_list_id, user_data=None, target_face=None):
@@ -38,6 +39,8 @@ def add_face(image, face_list_id, user_data=None, target_face=None):
         'targetFace': target_face,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_ADDFACE
+
     return util.request(
         'POST', url, headers=headers, params=params, json=json, data=data)
 
@@ -64,6 +67,8 @@ def create(face_list_id, name=None, user_data=None):
         'userData': user_data,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_CREATE
+
     return util.request('PUT', url, json=json)
 
 
@@ -85,6 +90,8 @@ def delete_face(face_list_id, persisted_face_id):
     url = 'facelists/{}/persistedFaces/{}'.format(face_list_id,
                                                   persisted_face_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_DELETEFACE
+
     return util.request('DELETE', url)
 
 
@@ -100,6 +107,8 @@ def delete(face_list_id):
         An empty response body.
     """
     url = 'facelists/{}'.format(face_list_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_DELETE
 
     return util.request('DELETE', url)
 
@@ -119,6 +128,8 @@ def get(face_list_id):
     """
     url = 'facelists/{}'.format(face_list_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_GET
+
     return util.request('GET', url)
 
 
@@ -131,6 +142,8 @@ def lists():
         An array of face list.
     """
     url = 'facelists'
+
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_LIST
 
     return util.request('GET', url)
 
@@ -155,5 +168,7 @@ def update(face_list_id, name=None, user_data=None):
         'name': name,
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.FACELIST_UPDATE
 
     return util.request('PATCH', url, json=json)

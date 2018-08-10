@@ -5,6 +5,7 @@ File: large_face_list_face.py
 Description: Large Face List Face section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def add(image, large_face_list_id, user_data=None, target_face=None):
@@ -37,6 +38,8 @@ def add(image, large_face_list_id, user_data=None, target_face=None):
         'targetFace': target_face,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_ADDFACE
+
     return util.request(
         'POST', url, headers=headers, params=params, json=json, data=data)
 
@@ -59,6 +62,8 @@ def delete(large_face_list_id, persisted_face_id):
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_DELETEFACE
+
     return util.request('DELETE', url)
 
 
@@ -79,6 +84,8 @@ def get(large_face_list_id, persisted_face_id):
     """
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_GETFACE
 
     return util.request('GET', url)
 
@@ -104,6 +111,8 @@ def list(large_face_list_id, start=None, top=None):
         'top': top,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_LISTFACE
+
     return util.request('GET', url, params=params)
 
 
@@ -127,5 +136,7 @@ def update(large_face_list_id, persisted_face_id, user_data=None):
     json = {
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_UPDATEFACE
 
     return util.request('PATCH', url, json=json)

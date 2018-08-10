@@ -5,6 +5,7 @@ File: person_group.py
 Description: Person Group section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def create(person_group_id, name=None, user_data=None):
@@ -29,6 +30,8 @@ def create(person_group_id, name=None, user_data=None):
         'userData': user_data,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_CREATE
+
     return util.request('PUT', url, json=json)
 
 
@@ -44,6 +47,8 @@ def delete(person_group_id):
         An empty response body.
     """
     url = 'persongroups/{}'.format(person_group_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_DELETE
 
     return util.request('DELETE', url)
 
@@ -62,6 +67,8 @@ def get(person_group_id):
     """
     url = 'persongroups/{}'.format(person_group_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_GET
+
     return util.request('GET', url)
 
 
@@ -77,6 +84,8 @@ def get_status(person_group_id):
         The person group's training status.
     """
     url = 'persongroups/{}/training'.format(person_group_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_GETTRAININGSTATUS
 
     return util.request('GET', url)
 
@@ -101,6 +110,8 @@ def lists(start=None, top=None):
         'top': top,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_LIST
+
     return util.request('GET', url, params=params)
 
 
@@ -115,6 +126,8 @@ def train(person_group_id):
         An empty JSON body.
     """
     url = 'persongroups/{}/train'.format(person_group_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_TRAIN
 
     return util.request('POST', url)
 
@@ -138,5 +151,7 @@ def update(person_group_id, name=None, user_data=None):
         'name': name,
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_UPDATE
 
     return util.request('PATCH', url, json=json)

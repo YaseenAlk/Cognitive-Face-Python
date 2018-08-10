@@ -5,6 +5,7 @@ File: large_face_list.py
 Description: Large Face List section of the Cognitive Face API.
 """
 from . import util
+from face_msgs.msg import FaceAPIRequest as req_msg
 
 
 def create(large_face_list_id, name=None, user_data=None):
@@ -28,6 +29,8 @@ def create(large_face_list_id, name=None, user_data=None):
         'userData': user_data,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_CREATE
+
     return util.request('PUT', url, json=json)
 
 
@@ -43,6 +46,8 @@ def delete(large_face_list_id):
         An empty response body.
     """
     url = 'largefacelists/{}'.format(large_face_list_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_DELETE
 
     return util.request('DELETE', url)
 
@@ -62,6 +67,8 @@ def get(large_face_list_id):
     """
     url = 'largefacelists/{}'.format(large_face_list_id)
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_GET
+
     return util.request('GET', url)
 
 
@@ -77,6 +84,8 @@ def get_status(large_face_list_id):
         The large face list's training status.
     """
     url = 'largefacelists/{}/training'.format(large_face_list_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_GETTRAININGSTATUS
 
     return util.request('GET', url)
 
@@ -101,6 +110,8 @@ def list(start=None, top=None):
         'top': top,
     }
 
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_LIST
+
     return util.request('GET', url, params=params)
 
 
@@ -115,6 +126,8 @@ def train(large_face_list_id):
         An empty JSON body.
     """
     url = 'largefacelists/{}/train'.format(large_face_list_id)
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_TRAIN
 
     return util.request('POST', url)
 
@@ -137,5 +150,7 @@ def update(large_face_list_id, name=None, user_data=None):
         'name': name,
         'userData': user_data,
     }
+
+    util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_UPDATE
 
     return util.request('PATCH', url, json=json)

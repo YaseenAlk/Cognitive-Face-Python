@@ -143,7 +143,7 @@ def request(method, url, data=None, json=None, headers=None, params=None):
         headers=headers)
 
     MostRecentResponse.get().response_type = response.status_code
-    MostRecentRequest.get().response = response.text
+    MostRecentResponse.get().response = response.text
 
     # Handle result and raise custom exception when something wrong.
     result = None

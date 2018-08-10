@@ -93,3 +93,4 @@ ENV/
 config.py
 Subscription.txt
 Endpoint.txt
+.idea/

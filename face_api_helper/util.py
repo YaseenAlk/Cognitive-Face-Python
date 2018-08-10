@@ -113,21 +113,21 @@ def request(method, url, data=None, json=None, headers=None, params=None):
 
     req_msg_method = -1
 
-    if method.lower() == 'post'
+    if method.lower() == 'post':
         req_msg_method = req_msg.HTTP_POST
-    elif method.lower() == 'put'
+    elif method.lower() == 'put':
         req_msg_method = req_msg.HTTP_PUT
-    elif method.lower() == 'delete'
+    elif method.lower() == 'delete':
         req_msg_method = req_msg.HTTP_DELETE
-    elif method.lower() == 'get'
+    elif method.lower() == 'get':
         req_msg_method = req_msg.HTTP_GET
-    elif method.lower() == 'patch'
+    elif method.lower() == 'patch':
         req_msg_method = req_msg.HTTP_PATCH
     
-    most_recent_request.request_method = req_msg_method
-    most_recent_request.content_type = headers['Content-Type']
-    most_recent_request.request_parameters = json_lib.dumps(params)
-    most_recent_request.request_body = data if headers['Content-Type'] == 'application/octet-stream' else json_lib.dumps(json).encode('utf-8')
+    MostRecentRequest.get().request_method = req_msg_method
+    MostRecentRequest.get().content_type = headers['Content-Type']
+    MostRecentRequest.get().request_parameters = json_lib.dumps(params)
+    MostRecentRequest.get().request_body = data if headers['Content-Type'] == 'application/octet-stream' else json_lib.dumps(json).encode('utf-8')
     
     response = requests.request(
         method,

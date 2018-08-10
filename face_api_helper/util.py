@@ -4,11 +4,16 @@
 File: util.py
 Description: Shared utilities for the Python SDK of the Cognitive Face API.
 """
+import sys
 import os.path
 import time
 
 import json as json_lib
 import requests
+
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 import face_api_helper as CF
 

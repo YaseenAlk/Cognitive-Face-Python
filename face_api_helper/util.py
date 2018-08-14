@@ -56,6 +56,7 @@ class Key(object):
         """Set the Subscription Key."""
         cls.key = key
         MostRecentRequest.get().api_subscription_key = key
+        CF._key_ = key
 
     @classmethod
     def get(cls):
@@ -72,6 +73,7 @@ class BaseUrl(object):
             base_url += '/'
         cls.base_url = base_url
         MostRecentRequest.get().location = base_url
+        CF._baseurl_ = base_url
 
     @classmethod
     def get(cls):
@@ -113,10 +115,10 @@ def bytearr_to_json_str(arr):
     my_json = arr.decode('utf8').replace("'", '"')
     data = json_lib.loads(my_json)
     return json_lib.dumps(data)
-
+    
 def make_req_using_ros_msg(msg_request):
     req_params = get_params_from_ros_msg(msg_request)
-    converted_body = bytearr_to_json_str(msg_request.request_body) if is_json_str(msg_request.request_body) else msg_request.request_body
+    converted_body = bytearr_to_json_str(msg_request.request_body) if is_json_str(msg_request.request_body.decode('utf8').replace("'", '"')) else msg_request.request_body
     func_to_exec = CF.FACE_MSG_NUM_TO_FUNC.get(msg_request.request_type, None)
 
     if func_to_exec is None:
@@ -149,13 +151,13 @@ def request(method, url, data=None, json=None, headers=None, params=None):
 
     # Make it possible to call only with short name (without BaseUrl).
     if not url.startswith('https://'):
-        url = BaseUrl.get() + url
+        url = CF._baseurl_ + url
 
     # Setup the headers with default Content-Type and Subscription Key.
     headers = headers or {}
     if 'Content-Type' not in headers:
         headers['Content-Type'] = 'application/json'
-    headers['Ocp-Apim-Subscription-Key'] = Key.get()
+    headers['Ocp-Apim-Subscription-Key'] = CF._key_
 
     req_msg_method = -1
 

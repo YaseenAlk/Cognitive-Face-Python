@@ -8,7 +8,7 @@ from . import util
 from face_msgs.msg import FaceAPIRequest as req_msg
 
 
-def detect(image, face_id=True, landmarks=False, attributes=''):
+def detect(image, face_id=True, landmarks=False, attributes='', ros_msg_params=None, ros_msg_body=None):
     """Detect human faces in an image and returns face locations, and
     optionally with `face_id`s, landmarks, and attributes.
 
@@ -30,8 +30,13 @@ def detect(image, face_id=True, landmarks=False, attributes=''):
         order. An empty response indicates no faces detected. A face entry may
         contain the corresponding values depending on input parameters.
     """
+    if ros_msg_params is not None:
+        face_id = ros_msg_params.get("returnFaceId", True)
+        landmarks = ros_msg_params.get("returnFaceLandmarks", False)
+        attributes = ros_msg_params.get("returnFaceAttributes", '')
+    
     url = 'detect'
-    headers, data, json = util.parse_image(image)
+    headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
         'returnFaceId': face_id and 'true' or 'false',
         'returnFaceLandmarks': landmarks and 'true' or 'false',
@@ -49,7 +54,7 @@ def find_similars(face_id,
                   large_face_list_id=None,
                   face_ids=None,
                   max_candidates_return=20,
-                  mode='matchPerson'):
+                  mode='matchPerson', ros_msg_params=None, ros_msg_body=None):
     """Given query face's `face_id`, to search the similar-looking faces from a
     `face_id` array, a `face_list_id` or a `large_face_list_id`.
 
@@ -80,6 +85,14 @@ def find_similars(face_id,
         input parameter is `face_ids` or `persisted_face_id` if the input
         parameter is `face_list_id` or `large_face_list_id`.
     """
+    if ros_msg_body is not None:
+        face_id = ros_msg_body.get("faceId", None)
+        face_list_id = ros_msg_body.get("faceListId", None)
+        large_face_list_id = ros_msg_body.get("largeFaceListId", None)
+        face_ids = ros_msg_body.get("faceIds", None)
+        max_candidates_return = ros_msg_body.get("maxNumOfCandidatesReturned ", 20)
+        mode = ros_msg_body.get("mode", 'matchPerson')
+
     url = 'findsimilars'
     json = {
         'faceId': face_id,
@@ -95,7 +108,7 @@ def find_similars(face_id,
     return util.request('POST', url, json=json)
 
 
-def group(face_ids):
+def group(face_ids, ros_msg_params=None, ros_msg_body=None):
     """Divide candidate faces into groups based on face similarity.
 
     Args:
@@ -106,6 +119,9 @@ def group(face_ids):
         one or more groups of similar faces (ranked by group size) and a
         messyGroup.
     """
+    if ros_msg_body is not None:
+        face_ids = ros_msg_body.get("faceIds", None)
+    
     url = 'group'
     json = {
         'faceIds': face_ids,
@@ -120,7 +136,7 @@ def identify(face_ids,
              person_group_id=None,
              large_person_group_id=None,
              max_candidates_return=1,
-             threshold=None):
+             threshold=None, ros_msg_params=None, ros_msg_body=None):
     """Identify unknown faces from a person group or a large person group.
 
     Args:
@@ -140,6 +156,13 @@ def identify(face_ids,
     Returns:
         The identified candidate person(s) for each query face(s).
     """
+    if ros_msg_body is not None:
+        face_ids = ros_msg_body.get("faceIds", None)
+        person_group_id = ros_msg_body.get("personGroupId", None)
+        large_person_group_id = ros_msg_body.get("largePersonGroupId", None)
+        max_candidates_return = ros_msg_body.get("maxNumOfCandidatesReturned", 1)
+        threshold = ros_msg_body.get("confidenceThreshold", None)
+
     url = 'identify'
     json = {
         'personGroupId': person_group_id,
@@ -158,7 +181,7 @@ def verify(face_id,
            another_face_id=None,
            person_group_id=None,
            large_person_group_id=None,
-           person_id=None):
+           person_id=None, ros_msg_params=None, ros_msg_body=None):
     """Verify whether two faces belong to a same person or whether one face
     belongs to a person.
 
@@ -181,6 +204,13 @@ def verify(face_id,
     Returns:
         The verification result.
     """
+    if ros_msg_body is not None:
+        face_id = ros_msg_body.get("faceId1", None) or ros_msg_body.get("faceId", None)
+        another_face_id = ros_msg_body.get("faceId2", None)
+        person_group_id = ros_msg_body.get("personGroupId", None)
+        large_person_group_id = ros_msg_body.get("largePersonGroupId", None)
+        person_id = ros_msg_body.get("personId", None)
+    
     url = 'verify'
     json = {}
     if another_face_id:

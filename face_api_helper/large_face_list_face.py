@@ -8,7 +8,7 @@ from . import util
 from face_msgs.msg import FaceAPIRequest as req_msg
 
 
-def add(image, large_face_list_id, user_data=None, target_face=None):
+def add(image, large_face_list_id, user_data=None, target_face=None, ros_msg_params=None, ros_msg_body=None):
     """Add a face to a large face list.
 
     The input face is specified as an image with a `target_face` rectangle. It
@@ -31,8 +31,13 @@ def add(image, large_face_list_id, user_data=None, target_face=None):
     Returns:
         A new `persisted_face_id`.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+        user_data = ros_msg_params.get("userData", None)
+        target_face = ros_msg_params.get("targetFace", None)
+    
     url = 'largefacelists/{}/persistedFaces'.format(large_face_list_id)
-    headers, data, json = util.parse_image(image)
+    headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
         'userData': user_data,
         'targetFace': target_face,
@@ -44,7 +49,7 @@ def add(image, large_face_list_id, user_data=None, target_face=None):
         'POST', url, headers=headers, params=params, json=json, data=data)
 
 
-def delete(large_face_list_id, persisted_face_id):
+def delete(large_face_list_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing face from a large face list (given by a
     `persisted_face_id` and a `large_face_list_id`). Persisted image related to
     the face will also be deleted.
@@ -59,6 +64,10 @@ def delete(large_face_list_id, persisted_face_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+    
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
 
@@ -67,7 +76,7 @@ def delete(large_face_list_id, persisted_face_id):
     return util.request('DELETE', url)
 
 
-def get(large_face_list_id, persisted_face_id):
+def get(large_face_list_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve information about a persisted face (specified by
     `persisted_face_id` and a `large_face_list_id`).
 
@@ -82,6 +91,10 @@ def get(large_face_list_id, persisted_face_id):
         The target persisted face's information (`persisted_face_id` and
         `user_data`).
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
 
@@ -90,7 +103,7 @@ def get(large_face_list_id, persisted_face_id):
     return util.request('GET', url)
 
 
-def list(large_face_list_id, start=None, top=None):
+def list(large_face_list_id, start=None, top=None, ros_msg_params=None, ros_msg_body=None):
     """Retrieve information (`persisted_face_id` and `user_data`) about
     existing persisted faces in a large face list.
 
@@ -105,6 +118,11 @@ def list(large_face_list_id, start=None, top=None):
         An array of persisted faces and their information (`persisted_face_id`
         and `user_data`).
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+        start = ros_msg_params.get("start", None)
+        top = ros_msg_params.get("top", None)
+
     url = 'largefacelists/{}/persistedFaces'.format(large_face_list_id)
     params = {
         'start': start,
@@ -116,7 +134,7 @@ def list(large_face_list_id, start=None, top=None):
     return util.request('GET', url, params=params)
 
 
-def update(large_face_list_id, persisted_face_id, user_data=None):
+def update(large_face_list_id, persisted_face_id, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update a persisted face's `user_data` field in a large face list.
 
     Args:
@@ -131,6 +149,13 @@ def update(large_face_list_id, persisted_face_id, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+    
+    if ros_msg_body is not None:
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
     json = {

@@ -12,7 +12,7 @@ def add_face(image,
              person_group_id,
              person_id,
              user_data=None,
-             target_face=None):
+             target_face=None, ros_msg_params=None, ros_msg_body=None):
     """Add a representative face to a person for identification. The input face
     is specified as an image with a `target_face` rectangle. It returns a
     `persisted_face_id` representing the added face and this
@@ -36,9 +36,15 @@ def add_face(image,
     Returns:
         A new `persisted_face_id`.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        user_data = ros_msg_params.get("userData", None)
+        target_face = ros_msg_params.get("targetFace", None)
+
     url = 'persongroups/{}/persons/{}/persistedFaces'.format(
         person_group_id, person_id)
-    headers, data, json = util.parse_image(image)
+    headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
         'userData': user_data,
         'targetFace': target_face,
@@ -50,7 +56,7 @@ def add_face(image,
         'POST', url, headers=headers, params=params, json=json, data=data)
 
 
-def create(person_group_id, name, user_data=None):
+def create(person_group_id, name, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Create a new person in a specified person group. A newly created person
     have no registered face, you can call `person.add_face` to add faces to the
     person.
@@ -65,6 +71,13 @@ def create(person_group_id, name, user_data=None):
     Returns:
         A new `person_id` created.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'persongroups/{}/persons'.format(person_group_id)
     json = {
         'name': name,
@@ -76,7 +89,7 @@ def create(person_group_id, name, user_data=None):
     return util.request('POST', url, json=json)
 
 
-def delete(person_group_id, person_id):
+def delete(person_group_id, person_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing person from a person group. Persisted face images of
     the person will also be deleted.
 
@@ -87,6 +100,10 @@ def delete(person_group_id, person_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+    
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_DELETE
@@ -94,7 +111,7 @@ def delete(person_group_id, person_id):
     return util.request('DELETE', url)
 
 
-def delete_face(person_group_id, person_id, persisted_face_id):
+def delete_face(person_group_id, person_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Delete a face from a person. Relative image for the persisted face will
     also be deleted.
 
@@ -109,6 +126,11 @@ def delete_face(person_group_id, person_id, persisted_face_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
 
@@ -117,7 +139,7 @@ def delete_face(person_group_id, person_id, persisted_face_id):
     return util.request('DELETE', url)
 
 
-def get(person_group_id, person_id):
+def get(person_group_id, person_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve a person's information, including registered persisted faces,
     `name` and `user_data`.
 
@@ -129,6 +151,10 @@ def get(person_group_id, person_id):
     Returns:
         The person's information.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+ 
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_GET
@@ -136,7 +162,7 @@ def get(person_group_id, person_id):
     return util.request('GET', url)
 
 
-def get_face(person_group_id, person_id, persisted_face_id):
+def get_face(person_group_id, person_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve information about a persisted face (specified by
     `persisted_face_ids`, `person_id` and its belonging `person_group_id`).
 
@@ -151,6 +177,11 @@ def get_face(person_group_id, person_id, persisted_face_id):
         The target persisted face's information (`persisted_face_id` and
         `user_data`).
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
 
@@ -159,7 +190,7 @@ def get_face(person_group_id, person_id, persisted_face_id):
     return util.request('GET', url)
 
 
-def lists(person_group_id, start=None, top=None):
+def lists(person_group_id, start=None, top=None, ros_msg_params=None, ros_msg_body=None):
     """List `top` persons in a person group with `person_id` greater than
     `start`, and retrieve person information (including `person_id`, `name`,
     `user_data` and `persisted_face_ids` of registered faces of the person).
@@ -173,6 +204,11 @@ def lists(person_group_id, start=None, top=None):
     Returns:
         An array of person information that belong to the person group.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        start = ros_msg_params.get("start", None)
+        top = ros_msg_params.get("top", None)
+
     url = 'persongroups/{}/persons'.format(person_group_id)
     params = {
         'start': start,
@@ -184,7 +220,7 @@ def lists(person_group_id, start=None, top=None):
     return util.request('GET', url, params=params)
 
 
-def update(person_group_id, person_id, name=None, user_data=None):
+def update(person_group_id, person_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update `name` or `user_data` of a person.
 
     Args:
@@ -198,6 +234,14 @@ def update(person_group_id, person_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
     json = {
         'name': name,
@@ -209,7 +253,7 @@ def update(person_group_id, person_id, name=None, user_data=None):
     return util.request('PATCH', url, json=json)
 
 
-def update_face(person_group_id, person_id, persisted_face_id, user_data=None):
+def update_face(person_group_id, person_id, persisted_face_id, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update a person persisted face's `user_data` field.
 
     Args:
@@ -224,6 +268,14 @@ def update_face(person_group_id, person_id, persisted_face_id, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
+    if ros_msg_body is not None:
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
     json = {

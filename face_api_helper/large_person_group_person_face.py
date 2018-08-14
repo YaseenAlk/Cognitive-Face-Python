@@ -12,7 +12,7 @@ def add(image,
         large_person_group_id,
         person_id,
         user_data=None,
-        target_face=None):
+        target_face=None, ros_msg_params=None, ros_msg_body=None):
     """Add a representative face to a person for identification. The input face
     is specified as an image with a `target_face` rectangle. It returns a
     `persisted_face_id` representing the added face and this
@@ -35,9 +35,15 @@ def add(image,
     Returns:
         A new `persisted_face_id`.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        user_data = ros_msg_params.get("userData", None)
+        target_face = ros_msg_params.get("targetFace", None)
+
     url = 'largepersongroups/{}/persons/{}/persistedFaces'.format(
         large_person_group_id, person_id)
-    headers, data, json = util.parse_image(image)
+    headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
         'userData': user_data,
         'targetFace': target_face,
@@ -49,7 +55,7 @@ def add(image,
         'POST', url, headers=headers, params=params, json=json, data=data)
 
 
-def delete(large_person_group_id, person_id, persisted_face_id):
+def delete(large_person_group_id, person_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Delete a face from a person. Relative image for the persisted face will
     also be deleted.
 
@@ -62,6 +68,11 @@ def delete(large_person_group_id, person_id, persisted_face_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
 
@@ -70,7 +81,7 @@ def delete(large_person_group_id, person_id, persisted_face_id):
     return util.request('DELETE', url)
 
 
-def get(large_person_group_id, person_id, persisted_face_id):
+def get(large_person_group_id, person_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve information about a persisted face (specified by
     `persisted_face_ids`, `person_id` and its belonging
     `large_person_group_id`).
@@ -86,6 +97,11 @@ def get(large_person_group_id, person_id, persisted_face_id):
         The target persisted face's information (`persisted_face_id` and
         `user_data`).
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
 
@@ -94,7 +110,7 @@ def get(large_person_group_id, person_id, persisted_face_id):
     return util.request('GET', url)
 
 
-def update(large_person_group_id, person_id, persisted_face_id, user_data):
+def update(large_person_group_id, person_id, persisted_face_id, user_data, ros_msg_params=None, ros_msg_body=None):
     """Update a person persisted face's `user_data` field.
 
     Args:
@@ -109,6 +125,14 @@ def update(large_person_group_id, person_id, persisted_face_id, user_data):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
+    if ros_msg_body is not None:
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
     json = {

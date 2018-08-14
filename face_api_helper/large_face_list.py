@@ -8,7 +8,7 @@ from . import util
 from face_msgs.msg import FaceAPIRequest as req_msg
 
 
-def create(large_face_list_id, name=None, user_data=None):
+def create(large_face_list_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Create an empty large face list with user-specified
     `large_face_list_id`, `name` and an optional `user_data`.
 
@@ -22,6 +22,13 @@ def create(large_face_list_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     name = name or large_face_list_id
     url = 'largefacelists/{}'.format(large_face_list_id)
     json = {
@@ -34,7 +41,7 @@ def create(large_face_list_id, name=None, user_data=None):
     return util.request('PUT', url, json=json)
 
 
-def delete(large_face_list_id):
+def delete(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing large face list according to `large_face_list_id`.
     Persisted face images in the large face list will also be deleted.
 
@@ -45,6 +52,9 @@ def delete(large_face_list_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+
     url = 'largefacelists/{}'.format(large_face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_DELETE
@@ -52,7 +62,7 @@ def delete(large_face_list_id):
     return util.request('DELETE', url)
 
 
-def get(large_face_list_id):
+def get(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve a large face list's information, including
     `large_face_list_id`, `name`, `user_data`. Large face list simply
     represents a list of faces, and could be treated as a searchable data
@@ -65,6 +75,9 @@ def get(large_face_list_id):
     Returns:
         The large face list's information.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+
     url = 'largefacelists/{}'.format(large_face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_GET
@@ -72,7 +85,7 @@ def get(large_face_list_id):
     return util.request('GET', url)
 
 
-def get_status(large_face_list_id):
+def get_status(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve the training status of a large face list (completed or
     ongoing). Training can be triggered by `large_face_list.train`. The
     training will process for a while on the server side.
@@ -83,6 +96,10 @@ def get_status(large_face_list_id):
     Returns:
         The large face list's training status.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+
+
     url = 'largefacelists/{}/training'.format(large_face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_GETTRAININGSTATUS
@@ -90,7 +107,7 @@ def get_status(large_face_list_id):
     return util.request('GET', url)
 
 
-def list(start=None, top=None):
+def list(start=None, top=None, ros_msg_params=None, ros_msg_body=None):
     """Retrieve information about all existing large face lists. Only
     `large_face_list_id`, `name` and `user_data` will be returned.
 
@@ -104,6 +121,10 @@ def list(start=None, top=None):
     Returns:
         An array of large face lists.
     """
+    if ros_msg_params is not None:
+        start = ros_msg_params.get("start", None)
+        top = ros_msg_params.get("top", None)
+
     url = 'largefacelists'
     params = {
         'start': start,
@@ -115,7 +136,7 @@ def list(start=None, top=None):
     return util.request('GET', url, params=params)
 
 
-def train(large_face_list_id):
+def train(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     """Queue a large face list training task, the training task may not be
     started immediately.
 
@@ -125,6 +146,9 @@ def train(large_face_list_id):
     Returns:
         An empty JSON body.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+
     url = 'largefacelists/{}/train'.format(large_face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_TRAIN
@@ -132,7 +156,7 @@ def train(large_face_list_id):
     return util.request('POST', url)
 
 
-def update(large_face_list_id, name=None, user_data=None):
+def update(large_face_list_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update information of a large face list, including `name` and `user_data`.
 
     Args:
@@ -145,6 +169,13 @@ def update(large_face_list_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'largefacelists/{}'.format(large_face_list_id)
     json = {
         'name': name,

@@ -8,7 +8,7 @@ from . import util
 from face_msgs.msg import FaceAPIRequest as req_msg
 
 
-def add_face(image, face_list_id, user_data=None, target_face=None):
+def add_face(image, face_list_id, user_data=None, target_face=None, ros_msg_params=None, ros_msg_body=None):
     """Add a face to a face list.
 
     The input face is specified as an image with a `target_face` rectangle. It
@@ -32,8 +32,13 @@ def add_face(image, face_list_id, user_data=None, target_face=None):
     Returns:
         A new `persisted_face_id`.
     """
+    if ros_msg_params is not None:
+        face_list_id = ros_msg_params.get("faceListId", None)
+        user_data = ros_msg_params.get("userData", None)
+        target_face = ros_msg_params.get("targetFace", None)
+    
     url = 'facelists/{}/persistedFaces'.format(face_list_id)
-    headers, data, json = util.parse_image(image)
+    headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
         'userData': user_data,
         'targetFace': target_face,
@@ -45,7 +50,7 @@ def add_face(image, face_list_id, user_data=None, target_face=None):
         'POST', url, headers=headers, params=params, json=json, data=data)
 
 
-def create(face_list_id, name=None, user_data=None):
+def create(face_list_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Create an empty face list with user-specified `face_list_id`, `name` and
     an optional `user_data`. Up to 64 face lists are allowed to exist in one
     subscription.
@@ -60,6 +65,13 @@ def create(face_list_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        face_list_id = ros_msg_params.get("faceListId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+    
     name = name or face_list_id
     url = 'facelists/{}'.format(face_list_id)
     json = {
@@ -72,7 +84,7 @@ def create(face_list_id, name=None, user_data=None):
     return util.request('PUT', url, json=json)
 
 
-def delete_face(face_list_id, persisted_face_id):
+def delete_face(face_list_id, persisted_face_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing face from a face list (given by a `persisted_face_id`
     and a `face_list_id`). Persisted image related to the face will also be
     deleted.
@@ -87,6 +99,10 @@ def delete_face(face_list_id, persisted_face_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        face_list_id = ros_msg_params.get("faceListId", None)
+        persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+    
     url = 'facelists/{}/persistedFaces/{}'.format(face_list_id,
                                                   persisted_face_id)
 
@@ -95,7 +111,7 @@ def delete_face(face_list_id, persisted_face_id):
     return util.request('DELETE', url)
 
 
-def delete(face_list_id):
+def delete(face_list_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing face list according to `face_list_id`. Persisted face
     images in the face list will also be deleted.
 
@@ -106,6 +122,9 @@ def delete(face_list_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        face_list_id = ros_msg_params.get("faceListId", None)
+    
     url = 'facelists/{}'.format(face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.FACELIST_DELETE
@@ -113,7 +132,7 @@ def delete(face_list_id):
     return util.request('DELETE', url)
 
 
-def get(face_list_id):
+def get(face_list_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve a face list's information, including `face_list_id`, `name`,
     `user_data` and faces in the face list. Face list simply represents a list
     of faces, and could be treated as a searchable data source in
@@ -126,6 +145,9 @@ def get(face_list_id):
     Returns:
         The face list's information.
     """
+    if ros_msg_params is not None:
+        face_list_id = ros_msg_params.get("faceListId", None)
+        
     url = 'facelists/{}'.format(face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.FACELIST_GET
@@ -133,7 +155,7 @@ def get(face_list_id):
     return util.request('GET', url)
 
 
-def lists():
+def lists(ros_msg_params=None, ros_msg_body=None):
     """Retrieve information about all existing face lists. Only `face_list_id`,
     `name` and `user_data` will be returned. Try `face_list.get` to retrieve
     face information inside face list.
@@ -148,7 +170,7 @@ def lists():
     return util.request('GET', url)
 
 
-def update(face_list_id, name=None, user_data=None):
+def update(face_list_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update information of a face list, including `name` and `user_data`.
     Face List simply represents a list of persisted faces, and could be treated
     as a searchable data source in `face.find_similars`.
@@ -163,6 +185,13 @@ def update(face_list_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        face_list_id = ros_msg_params.get("faceListId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'facelists/{}'.format(face_list_id)
     json = {
         'name': name,

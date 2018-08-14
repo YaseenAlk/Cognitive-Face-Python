@@ -102,6 +102,47 @@ def read_json_param_from_str(string, param):
         dictionary = json_lib.loads(string)
         return dictionary[param]
 
+def is_json_str(string):
+    try:
+        json_lib.loads(string)
+        return True
+    except ValueError:
+        return False
+
+def bytearr_to_json_str(arr):
+    my_json = arr.decode('utf8').replace("'", '"')
+    data = json_lib.loads(my_json)
+    return json_lib.dumps(data)
+
+def make_req_using_ros_msg(msg_request):
+    req_params = get_params_from_ros_msg(msg_request)
+    converted_body = bytearr_to_json_str(msg_request.request_body) if is_json_str(msg_request.request_body) else msg_request.request_body
+    func_to_exec = CF.FACE_MSG_NUM_TO_FUNC.get(msg_request.request_type, None)
+
+    if func_to_exec is None:
+        raise ValueError("Unknown API request type... Make sure you are passing in a valid FaceAPIRequest msg")
+    
+    func_arguments = func_to_exec.__code__.co_varnames
+    passed_args = {}
+    for arg in func_arguments:
+        passed_args[arg] = None
+    passed_args['ros_msg_params'] = req_params
+    passed_args['ros_msg_body'] = converted_body
+    
+    func_to_exec(**passed_args)
+
+def get_params_from_ros_msg(msg_request, params_to_get=None):
+    msg_params = json_lib.loads(msg_request.request_parameters)
+    returned_dict = {}
+    if params_to_get is not None:
+        for p in params_to_get:
+            val = msg_params.get(p, None)
+            if val is not None:
+                returned_dict[p] = val
+    else:
+        returned_dict = msg_params
+    return returned_dict
+
 def request(method, url, data=None, json=None, headers=None, params=None):
     # pylint: disable=too-many-arguments
     """Universal interface for request."""
@@ -188,6 +229,8 @@ def parse_image(image):
         headers = {'Content-Type': 'application/octet-stream'}
         data = open(image, 'rb').read()
         return headers, data, None
+    elif is_json_str(image) and "url" in json_lib.loads(image).keys():
+        return parse_image(json_lib.loads(image)["url"])
     else:  # Default treat it as a URL (string).
         headers = {'Content-Type': 'application/json'}
         json = {'url': image}

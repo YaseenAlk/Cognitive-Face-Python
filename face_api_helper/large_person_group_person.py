@@ -8,7 +8,7 @@ from . import util
 from face_msgs.msg import FaceAPIRequest as req_msg
 
 
-def create(large_person_group_id, name, user_data=None):
+def create(large_person_group_id, name, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Create a new person in a specified large person group. A newly created
     person have no registered face.
 
@@ -22,6 +22,13 @@ def create(large_person_group_id, name, user_data=None):
     Returns:
         A new `person_id` created.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'largepersongroups/{}/persons'.format(large_person_group_id)
     json = {
         'name': name,
@@ -33,7 +40,7 @@ def create(large_person_group_id, name, user_data=None):
     return util.request('POST', url, json=json)
 
 
-def delete(large_person_group_id, person_id):
+def delete(large_person_group_id, person_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing person from a large person group. Persisted face
     images of the person will also be deleted.
 
@@ -45,6 +52,10 @@ def delete(large_person_group_id, person_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+
     url = 'largepersongroups/{}/persons/{}'.format(large_person_group_id,
                                                    person_id)
 
@@ -53,7 +64,7 @@ def delete(large_person_group_id, person_id):
     return util.request('DELETE', url)
 
 
-def get(large_person_group_id, person_id):
+def get(large_person_group_id, person_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve a person's information, including registered persisted faces,
     `name` and `user_data`.
 
@@ -65,6 +76,10 @@ def get(large_person_group_id, person_id):
     Returns:
         The person's information.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+
     url = 'largepersongroups/{}/persons/{}'.format(large_person_group_id,
                                                    person_id)
 
@@ -73,7 +88,7 @@ def get(large_person_group_id, person_id):
     return util.request('GET', url)
 
 
-def list(large_person_group_id, start=None, top=None):
+def list(large_person_group_id, start=None, top=None, ros_msg_params=None, ros_msg_body=None):
     """List `top` persons in a large person group with `person_id` greater than
     `start`, and retrieve person information (including `person_id`, `name`,
     `user_data` and `persisted_face_ids` of registered faces of the person).
@@ -88,6 +103,11 @@ def list(large_person_group_id, start=None, top=None):
     Returns:
         An array of person information that belong to the large person group.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        start = ros_msg_params.get("start", None)
+        top = ros_msg_params.get("top", None)
+
     url = 'largepersongroups/{}/persons'.format(large_person_group_id)
     params = {
         'start': start,
@@ -99,7 +119,7 @@ def list(large_person_group_id, start=None, top=None):
     return util.request('GET', url, params=params)
 
 
-def update(large_person_group_id, person_id, name=None, user_data=None):
+def update(large_person_group_id, person_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update `name` or `user_data` of a person.
 
     Args:
@@ -113,6 +133,14 @@ def update(large_person_group_id, person_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+        person_id = ros_msg_params.get("personId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'largepersongroups/{}/persons/{}'.format(large_person_group_id,
                                                    person_id)
     json = {

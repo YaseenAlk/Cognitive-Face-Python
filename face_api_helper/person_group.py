@@ -8,7 +8,7 @@ from . import util
 from face_msgs.msg import FaceAPIRequest as req_msg
 
 
-def create(person_group_id, name=None, user_data=None):
+def create(person_group_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Create a new person group with specified `person_group_id`, `name` and
     user-provided `user_data`.
 
@@ -23,6 +23,13 @@ def create(person_group_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     name = name or person_group_id
     url = 'persongroups/{}'.format(person_group_id)
     json = {
@@ -35,7 +42,7 @@ def create(person_group_id, name=None, user_data=None):
     return util.request('PUT', url, json=json)
 
 
-def delete(person_group_id):
+def delete(person_group_id, ros_msg_params=None, ros_msg_body=None):
     """Delete an existing person group. Persisted face images of all people in
     the person group will also be deleted.
 
@@ -46,6 +53,9 @@ def delete(person_group_id):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+
     url = 'persongroups/{}'.format(person_group_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_DELETE
@@ -53,7 +63,7 @@ def delete(person_group_id):
     return util.request('DELETE', url)
 
 
-def get(person_group_id):
+def get(person_group_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve the information of a person group, including its `name` and
     `user_data`. This API returns person group information only, use
     `person.lists` instead to retrieve person information under the person
@@ -65,6 +75,9 @@ def get(person_group_id):
     Returns:
         The person group's information.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+
     url = 'persongroups/{}'.format(person_group_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_GET
@@ -72,7 +85,7 @@ def get(person_group_id):
     return util.request('GET', url)
 
 
-def get_status(person_group_id):
+def get_status(person_group_id, ros_msg_params=None, ros_msg_body=None):
     """Retrieve the training status of a person group (completed or ongoing).
     Training can be triggered by `person_group.train`. The training will
     process for a while on the server side.
@@ -83,6 +96,9 @@ def get_status(person_group_id):
     Returns:
         The person group's training status.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+
     url = 'persongroups/{}/training'.format(person_group_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_GETTRAININGSTATUS
@@ -90,7 +106,7 @@ def get_status(person_group_id):
     return util.request('GET', url)
 
 
-def lists(start=None, top=None):
+def lists(start=None, top=None, ros_msg_params=None, ros_msg_body=None):
     """List person groups and their information.
 
     Args:
@@ -104,6 +120,10 @@ def lists(start=None, top=None):
         An array of person groups and their information (`person_group_id`,
         `name` and `user_data`).
     """
+    if ros_msg_params is not None:
+        start = ros_msg_params.get("start", None)
+        top = ros_msg_params.get("top", None)
+
     url = 'persongroups'
     params = {
         'start': start,
@@ -115,7 +135,7 @@ def lists(start=None, top=None):
     return util.request('GET', url, params=params)
 
 
-def train(person_group_id):
+def train(person_group_id, ros_msg_params=None, ros_msg_body=None):
     """Queue a person group training task, the training task may not be started
     immediately.
 
@@ -125,6 +145,9 @@ def train(person_group_id):
     Returns:
         An empty JSON body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+
     url = 'persongroups/{}/train'.format(person_group_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUP_TRAIN
@@ -132,7 +155,7 @@ def train(person_group_id):
     return util.request('POST', url)
 
 
-def update(person_group_id, name=None, user_data=None):
+def update(person_group_id, name=None, user_data=None, ros_msg_params=None, ros_msg_body=None):
     """Update an existing person group's display `name` and `user_data`. The
     properties which does not appear in request body will not be updated.
 
@@ -146,6 +169,13 @@ def update(person_group_id, name=None, user_data=None):
     Returns:
         An empty response body.
     """
+    if ros_msg_params is not None:
+        person_group_id = ros_msg_params.get("personGroupId", None)
+    
+    if ros_msg_body is not None:
+        name = ros_msg_body.get("name", None)
+        user_data = ros_msg_body.get("userData", None)
+
     url = 'persongroups/{}'.format(person_group_id)
     json = {
         'name': name,

@@ -131,7 +131,7 @@ def make_req_using_ros_msg(msg_request):
     passed_args['ros_msg_params'] = req_params
     passed_args['ros_msg_body'] = json_lib.loads(converted_body)
     
-    func_to_exec(**passed_args)
+    return func_to_exec(**passed_args)
 
 def get_params_from_ros_msg(msg_request, params_to_get=None):
     msg_params = json_lib.loads(msg_request.request_parameters)

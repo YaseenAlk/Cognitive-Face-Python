@@ -36,6 +36,8 @@ def add(image, large_face_list_id, user_data=None, target_face=None, ros_msg_par
         user_data = ros_msg_params.get("userData", None)
         target_face = ros_msg_params.get("targetFace", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id, 'userData': user_data, 'targetFace': target_face})
+
     url = 'largefacelists/{}/persistedFaces'.format(large_face_list_id)
     headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
@@ -68,6 +70,8 @@ def delete(large_face_list_id, persisted_face_id, ros_msg_params=None, ros_msg_b
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id, 'persistedFaceId': persisted_face_id})
+
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
 
@@ -94,6 +98,8 @@ def get(large_face_list_id, persisted_face_id, ros_msg_params=None, ros_msg_body
     if ros_msg_params is not None:
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id, 'persistedFaceId': persisted_face_id})
 
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)
@@ -122,6 +128,8 @@ def list(large_face_list_id, start=None, top=None, ros_msg_params=None, ros_msg_
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
         start = ros_msg_params.get("start", None)
         top = ros_msg_params.get("top", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id, 'start': start, 'top': top})
 
     url = 'largefacelists/{}/persistedFaces'.format(large_face_list_id)
     params = {
@@ -155,6 +163,8 @@ def update(large_face_list_id, persisted_face_id, user_data=None, ros_msg_params
     
     if ros_msg_body is not None:
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id, 'persistedFaceId': persisted_face_id})
 
     url = 'largefacelists/{}/persistedFaces/{}'.format(large_face_list_id,
                                                        persisted_face_id)

@@ -29,6 +29,8 @@ def create(large_face_list_id, name=None, user_data=None, ros_msg_params=None, r
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id})
+
     name = name or large_face_list_id
     url = 'largefacelists/{}'.format(large_face_list_id)
     json = {
@@ -55,6 +57,8 @@ def delete(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     if ros_msg_params is not None:
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id})
+
     url = 'largefacelists/{}'.format(large_face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_DELETE
@@ -78,6 +82,8 @@ def get(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     if ros_msg_params is not None:
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id})
+
     url = 'largefacelists/{}'.format(large_face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEFACELIST_GET
@@ -99,6 +105,7 @@ def get_status(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     if ros_msg_params is not None:
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id})
 
     url = 'largefacelists/{}/training'.format(large_face_list_id)
 
@@ -125,6 +132,8 @@ def list(start=None, top=None, ros_msg_params=None, ros_msg_body=None):
         start = ros_msg_params.get("start", None)
         top = ros_msg_params.get("top", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'start': start, 'top': top})
+
     url = 'largefacelists'
     params = {
         'start': start,
@@ -148,6 +157,8 @@ def train(large_face_list_id, ros_msg_params=None, ros_msg_body=None):
     """
     if ros_msg_params is not None:
         large_face_list_id = ros_msg_params.get("largeFaceListId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id})
 
     url = 'largefacelists/{}/train'.format(large_face_list_id)
 
@@ -175,6 +186,8 @@ def update(large_face_list_id, name=None, user_data=None, ros_msg_params=None, r
     if ros_msg_body is not None:
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largeFaceListId': large_face_list_id})
 
     url = 'largefacelists/{}'.format(large_face_list_id)
     json = {

@@ -30,6 +30,8 @@ def create(large_person_group_id, name=None, user_data=None, ros_msg_params=None
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
+
     name = name or large_person_group_id
     url = 'largepersongroups/{}'.format(large_person_group_id)
     json = {
@@ -56,6 +58,8 @@ def delete(large_person_group_id, ros_msg_params=None, ros_msg_body=None):
     if ros_msg_params is not None:
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
+
     url = 'largepersongroups/{}'.format(large_person_group_id)
 
     util.MostRecentRequest.get().request_type = req_msg.LARGEPERSONGROUP_DELETE
@@ -76,6 +80,8 @@ def get(large_person_group_id, ros_msg_params=None, ros_msg_body=None):
     """
     if ros_msg_params is not None:
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
 
     url = 'largepersongroups/{}'.format(large_person_group_id)
 
@@ -98,6 +104,8 @@ def get_status(large_person_group_id, ros_msg_params=None, ros_msg_body=None):
     """
     if ros_msg_params is not None:
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
 
     url = 'largepersongroups/{}/training'.format(large_person_group_id)
 
@@ -124,6 +132,8 @@ def list(start=None, top=None, ros_msg_params=None, ros_msg_body=None):
         start = ros_msg_params.get("start", None)
         top = ros_msg_params.get("top", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'start':start, 'top':top})
+
     url = 'largepersongroups'
     params = {
         'start': start,
@@ -147,6 +157,8 @@ def train(large_person_group_id, ros_msg_params=None, ros_msg_body=None):
     """
     if ros_msg_params is not None:
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
 
     url = 'largepersongroups/{}/train'.format(large_person_group_id)
 
@@ -176,6 +188,8 @@ def update(large_person_group_id, name=None, user_data=None, ros_msg_params=None
     if ros_msg_body is not None:
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
 
     url = 'largepersongroups/{}'.format(large_person_group_id)
     json = {

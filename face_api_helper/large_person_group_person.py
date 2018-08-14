@@ -29,6 +29,8 @@ def create(large_person_group_id, name, user_data=None, ros_msg_params=None, ros
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id})
+
     url = 'largepersongroups/{}/persons'.format(large_person_group_id)
     json = {
         'name': name,
@@ -56,6 +58,8 @@ def delete(large_person_group_id, person_id, ros_msg_params=None, ros_msg_body=N
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
         person_id = ros_msg_params.get("personId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id})
+
     url = 'largepersongroups/{}/persons/{}'.format(large_person_group_id,
                                                    person_id)
 
@@ -79,6 +83,8 @@ def get(large_person_group_id, person_id, ros_msg_params=None, ros_msg_body=None
     if ros_msg_params is not None:
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
         person_id = ros_msg_params.get("personId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id})
 
     url = 'largepersongroups/{}/persons/{}'.format(large_person_group_id,
                                                    person_id)
@@ -107,6 +113,8 @@ def list(large_person_group_id, start=None, top=None, ros_msg_params=None, ros_m
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
         start = ros_msg_params.get("start", None)
         top = ros_msg_params.get("top", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'start': start, 'top': top})
 
     url = 'largepersongroups/{}/persons'.format(large_person_group_id)
     params = {
@@ -140,6 +148,8 @@ def update(large_person_group_id, person_id, name=None, user_data=None, ros_msg_
     if ros_msg_body is not None:
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id})
 
     url = 'largepersongroups/{}/persons/{}'.format(large_person_group_id,
                                                    person_id)

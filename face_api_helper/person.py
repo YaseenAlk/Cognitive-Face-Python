@@ -42,6 +42,8 @@ def add_face(image,
         user_data = ros_msg_params.get("userData", None)
         target_face = ros_msg_params.get("targetFace", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id, 'userData': user_data, 'targetFace': target_face})
+
     url = 'persongroups/{}/persons/{}/persistedFaces'.format(
         person_group_id, person_id)
     headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
@@ -78,6 +80,8 @@ def create(person_group_id, name, user_data=None, ros_msg_params=None, ros_msg_b
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id})
+
     url = 'persongroups/{}/persons'.format(person_group_id)
     json = {
         'name': name,
@@ -104,6 +108,8 @@ def delete(person_group_id, person_id, ros_msg_params=None, ros_msg_body=None):
         person_group_id = ros_msg_params.get("personGroupId", None)
         person_id = ros_msg_params.get("personId", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id})
+
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_DELETE
@@ -131,6 +137,8 @@ def delete_face(person_group_id, person_id, persisted_face_id, ros_msg_params=No
         person_id = ros_msg_params.get("personId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id, 'persistedFaceId': persisted_face_id})
+
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
 
@@ -155,6 +163,8 @@ def get(person_group_id, person_id, ros_msg_params=None, ros_msg_body=None):
         person_group_id = ros_msg_params.get("personGroupId", None)
         person_id = ros_msg_params.get("personId", None)
  
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id})
+
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
 
     util.MostRecentRequest.get().request_type = req_msg.PERSONGROUPPERSON_GET
@@ -182,6 +192,8 @@ def get_face(person_group_id, person_id, persisted_face_id, ros_msg_params=None,
         person_id = ros_msg_params.get("personId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id, 'persistedFaceId': persisted_face_id})
+
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)
 
@@ -208,6 +220,8 @@ def lists(person_group_id, start=None, top=None, ros_msg_params=None, ros_msg_bo
         person_group_id = ros_msg_params.get("personGroupId", None)
         start = ros_msg_params.get("start", None)
         top = ros_msg_params.get("top", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'start': start, 'top': top})
 
     url = 'persongroups/{}/persons'.format(person_group_id)
     params = {
@@ -242,6 +256,8 @@ def update(person_group_id, person_id, name=None, user_data=None, ros_msg_params
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id})
+
     url = 'persongroups/{}/persons/{}'.format(person_group_id, person_id)
     json = {
         'name': name,
@@ -275,6 +291,8 @@ def update_face(person_group_id, person_id, persisted_face_id, user_data=None, r
 
     if ros_msg_body is not None:
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'personGroupId': person_group_id, 'personId': person_id, 'persistedFaceId': persisted_face_id})
 
     url = 'persongroups/{}/persons/{}/persistedFaces/{}'.format(
         person_group_id, person_id, persisted_face_id)

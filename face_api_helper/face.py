@@ -35,6 +35,8 @@ def detect(image, face_id=True, landmarks=False, attributes='', ros_msg_params=N
         landmarks = ros_msg_params.get("returnFaceLandmarks", False)
         attributes = ros_msg_params.get("returnFaceAttributes", '')
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'returnFaceId': face_id, 'returnFaceLandmarks': landmarks, 'returnFaceAttributes': attributes})
+
     url = 'detect'
     headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {

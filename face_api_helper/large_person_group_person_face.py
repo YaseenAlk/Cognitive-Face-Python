@@ -41,6 +41,8 @@ def add(image,
         user_data = ros_msg_params.get("userData", None)
         target_face = ros_msg_params.get("targetFace", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id, 'userData': user_data, 'targetFace': target_face})
+
     url = 'largepersongroups/{}/persons/{}/persistedFaces'.format(
         large_person_group_id, person_id)
     headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
@@ -73,6 +75,8 @@ def delete(large_person_group_id, person_id, persisted_face_id, ros_msg_params=N
         person_id = ros_msg_params.get("personId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
 
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id, 'persistedFaceId': persisted_face_id})
+
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
 
@@ -101,6 +105,8 @@ def get(large_person_group_id, person_id, persisted_face_id, ros_msg_params=None
         large_person_group_id = ros_msg_params.get("largePersonGroupId", None)
         person_id = ros_msg_params.get("personId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id, 'persistedFaceId': persisted_face_id})
 
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)
@@ -132,6 +138,8 @@ def update(large_person_group_id, person_id, persisted_face_id, user_data, ros_m
 
     if ros_msg_body is not None:
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'largePersonGroupId': large_person_group_id, 'personId': person_id, 'persistedFaceId': persisted_face_id})
 
     url = 'largepersongroups/{}/persons/{}/persistedFaces/{}'.format(
         large_person_group_id, person_id, persisted_face_id)

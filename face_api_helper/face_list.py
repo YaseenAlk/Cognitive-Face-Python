@@ -37,6 +37,8 @@ def add_face(image, face_list_id, user_data=None, target_face=None, ros_msg_para
         user_data = ros_msg_params.get("userData", None)
         target_face = ros_msg_params.get("targetFace", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'faceListId': face_list_id, 'userData': user_data, 'targetFace': target_face})
+
     url = 'facelists/{}/persistedFaces'.format(face_list_id)
     headers, data, json = util.parse_image(image if ros_msg_body is None else ros_msg_body)
     params = {
@@ -72,6 +74,8 @@ def create(face_list_id, name=None, user_data=None, ros_msg_params=None, ros_msg
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'faceListId': face_list_id})
+
     name = name or face_list_id
     url = 'facelists/{}'.format(face_list_id)
     json = {
@@ -103,6 +107,8 @@ def delete_face(face_list_id, persisted_face_id, ros_msg_params=None, ros_msg_bo
         face_list_id = ros_msg_params.get("faceListId", None)
         persisted_face_id = ros_msg_params.get("persistedFaceId", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'faceListId': face_list_id, 'persistedFaceId': persisted_face_id})
+
     url = 'facelists/{}/persistedFaces/{}'.format(face_list_id,
                                                   persisted_face_id)
 
@@ -125,6 +131,8 @@ def delete(face_list_id, ros_msg_params=None, ros_msg_body=None):
     if ros_msg_params is not None:
         face_list_id = ros_msg_params.get("faceListId", None)
     
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'faceListId': face_list_id})
+
     url = 'facelists/{}'.format(face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.FACELIST_DELETE
@@ -148,6 +156,8 @@ def get(face_list_id, ros_msg_params=None, ros_msg_body=None):
     if ros_msg_params is not None:
         face_list_id = ros_msg_params.get("faceListId", None)
         
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'faceListId': face_list_id})
+
     url = 'facelists/{}'.format(face_list_id)
 
     util.MostRecentRequest.get().request_type = req_msg.FACELIST_GET
@@ -191,6 +201,8 @@ def update(face_list_id, name=None, user_data=None, ros_msg_params=None, ros_msg
     if ros_msg_body is not None:
         name = ros_msg_body.get("name", None)
         user_data = ros_msg_body.get("userData", None)
+
+    util.MostRecentRequest.get().request_parameters = util.json_lib.dumps({'faceListId': face_list_id})
 
     url = 'facelists/{}'.format(face_list_id)
     json = {

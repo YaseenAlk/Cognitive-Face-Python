@@ -174,7 +174,6 @@ def request(method, url, data=None, json=None, headers=None, params=None):
     
     MostRecentRequest.get().request_method = req_msg_method
     MostRecentRequest.get().content_type = headers['Content-Type']
-    MostRecentRequest.get().request_parameters = json_lib.dumps(params)
     MostRecentRequest.get().request_body = data if headers['Content-Type'] == 'application/octet-stream' else json_lib.dumps(json).encode('utf-8')
     
     response = requests.request(

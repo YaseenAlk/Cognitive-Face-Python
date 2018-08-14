@@ -23,8 +23,8 @@ from .util import MostRecentResponse
 from face_msgs.msg import FaceAPIRequest as req_msg
 from face_msgs.msg import FaceAPIResponse as resp_msg
 
-_key_ = ""
-_baseurl_ = ""
+_key_ = None
+_baseurl_ = util.DEFAULT_BASE_URL
 
 FACE_MSG_NUM_TO_FUNC = {
     req_msg.FACE_DETECT: face.detect,

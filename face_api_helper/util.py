@@ -124,7 +124,7 @@ def make_req_using_ros_msg(msg_request):
     if func_to_exec is None:
         raise ValueError("Unknown API request type... Make sure you are passing in a valid FaceAPIRequest msg")
     
-    func_arguments = func_to_exec.__code__.co_varnames
+    func_arguments = func_to_exec.__code__.co_varnames[:func_to_exec.__code__.co_argcount]
     passed_args = {}
     for arg in func_arguments:
         passed_args[arg] = None
